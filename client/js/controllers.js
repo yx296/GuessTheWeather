@@ -1,5 +1,5 @@
 angular.module('weather.controller', [])
-.controller('WeatherController', function($scope, $http, $q, openWeather){
+.controller('WeatherController', function($scope, $q, openWeatherAPI){
   
   $scope.Weather = [];
   $scope.mapShow = true;
@@ -23,35 +23,31 @@ angular.module('weather.controller', [])
       var cityName1 = $scope.newWeatherEntry1;
       var cityName2 = $scope.newWeatherEntry2;
 
-      var promise1 = $http.get('http://api.openweathermap.org/data/2.5/weather?q=' + cityName1 + '&APPID=693b2826cea96ecff31ad27e7dd55247')
-        .then(function(response) {
+      var weatherPromise1 = openWeatherAPI.getWeatherForCity(cityName1).then(function(data) {
+        coordOne.lat = data.coord.lat; 
+        coordOne.lng = data.coord.lon;
+        var weatherDescription1 = data.weather[0].description;
+        $scope.Weather.push("The weather in " + cityName1 + ": " + weatherDescription1);
+        weatherDescriptions.push(weatherDescription1); 
+      })
 
-          coordOne.lat = response.data.coord.lat; 
-          coordOne.lng = response.data.coord.lon;
-          var weatherDescription1 = response.data.weather[0].description;
-          $scope.Weather.push("The weather in " + cityName1 + ": " + weatherDescription1);
-          weatherDescriptions.push(weatherDescription1); 
-        });
+      var weatherPromise2 = openWeatherAPI.getWeatherForCity(cityName2).then(function(data) {
+        coordTwo.lat = data.coord.lat; 
+        coordTwo.lng = data.coord.lon;
 
-      var promise2 = $http.get('http://api.openweathermap.org/data/2.5/weather?q=' + cityName2 + '&APPID=693b2826cea96ecff31ad27e7dd55247')
-        .then(function(response) {
-
-          coordTwo.lat = response.data.coord.lat; 
-          coordTwo.lng = response.data.coord.lon;
-
-          var weatherDescription2 = response.data.weather[0].description;
-          $scope.Weather.push("The weather in " + cityName2 + ": " + weatherDescription2);
-          weatherDescriptions.push(weatherDescription2);
-        });
+        var weatherDescription2 = data.weather[0].description;
+        $scope.Weather.push("The weather in " + cityName2 + ": " + weatherDescription2);
+        weatherDescriptions.push(weatherDescription2);
+      })
 
       //waits for both promises to be done before comparing the weather of both cities
-      $q.all([promise1, promise2]).then(function(){
-        $scope.checkWeather(weatherDescriptions, cityName1, cityName2);
+      $q.all([weatherPromise1, weatherPromise2]).then(function(){
+        checkWeather(weatherDescriptions, cityName1, cityName2);
       });    
     }
   };
 
-  $scope.checkWeather = function(descriptionArray, city1, city2) {
+  function checkWeather(descriptionArray, city1, city2) {
     $scope.newWeatherEntry1 = '';
     $scope.newWeatherEntry2 = '';
 
@@ -72,9 +68,7 @@ angular.module('weather.controller', [])
     } else {
       $scope.result = "You lose this round";
     }
-
-    
-    
+  
     if ($scope.rounds === 4) {
       $scope.gameMsg = "Game Over. New Game?";
       if ($scope.currentScore > $scope.highScore) {
@@ -83,7 +77,7 @@ angular.module('weather.controller', [])
       $scope.currentScore = 0;
     }
 
-    };
+  };
 
   $scope.resetWeather = function() {
     if ($scope.rounds === 4) {
@@ -91,8 +85,8 @@ angular.module('weather.controller', [])
     } else {
       $scope.rounds++;
     }
-    $scope.Weather = [];
     weatherDescriptions = [];
+    $scope.Weather = [];
     $scope.result = '';
     $scope.distance = '';
     $scope.mapShow = true;

@@ -1,22 +1,15 @@
 angular.module('weather.services', [])
 
-.factory('openWeather', function($http) {
+.factory('openWeatherAPI', function($http) {
   
-  var Users = {
-    findAll: function () {
-      return $http.get('/users').then(function(response) {
-        return response.data;
-      });
-    },
-    create: function (newUser) {
-      return $http.post('/users', newUser);
-    },
-    findById: function (id) {
-      return $http.get('/users/' + id).then(function(response) {
-        return response.data;
-      })
+  var openWeatherAPI = {
+    getWeatherForCity: function (city) {
+      return $http.get('http://api.openweathermap.org/data/2.5/weather?q=' + city + '&APPID=693b2826cea96ecff31ad27e7dd55247')
+        .then(function(response) {
+          return response.data;
+        });   
     }
   };
 
-  return Users;
+  return openWeatherAPI;
 })
