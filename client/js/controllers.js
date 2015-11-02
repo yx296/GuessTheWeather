@@ -2,12 +2,12 @@ angular.module('weather.controller', [])
 .controller('WeatherController', function($scope, $http, $q, openWeather){
   
   $scope.Weather = [];
-  $scope.description = [];
   $scope.mapShow = true;
   $scope.roundOver = false;
   $scope.currentScore = 0;
   $scope.highScore = 0;
   
+  var weatherDescriptions = [];
   var coordOne = {};
   var coordTwo = {};
   
@@ -30,7 +30,7 @@ angular.module('weather.controller', [])
           coordOne.lng = response.data.coord.lon;
           var weatherDescription1 = response.data.weather[0].description;
           $scope.Weather.push("The weather in " + cityName1 + ": " + weatherDescription1);
-          $scope.description.push(weatherDescription1); 
+          weatherDescriptions.push(weatherDescription1); 
         });
 
       var promise2 = $http.get('http://api.openweathermap.org/data/2.5/weather?q=' + cityName2 + '&APPID=693b2826cea96ecff31ad27e7dd55247')
@@ -41,12 +41,12 @@ angular.module('weather.controller', [])
 
           var weatherDescription2 = response.data.weather[0].description;
           $scope.Weather.push("The weather in " + cityName2 + ": " + weatherDescription2);
-          $scope.description.push(weatherDescription2);
+          weatherDescriptions.push(weatherDescription2);
         });
 
       //waits for both promises to be done before comparing the weather of both cities
       $q.all([promise1, promise2]).then(function(){
-        $scope.checkWeather($scope.description, cityName1, cityName2);
+        $scope.checkWeather(weatherDescriptions, cityName1, cityName2);
       });    
     }
   };
@@ -92,8 +92,9 @@ angular.module('weather.controller', [])
       $scope.rounds++;
     }
     $scope.Weather = [];
-    $scope.description = [];
+    weatherDescriptions = [];
     $scope.result = '';
+    $scope.distance = '';
     $scope.mapShow = true;
     $scope.roundOver = false;
     $scope.gameMsg = "Try Again";
