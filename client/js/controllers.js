@@ -27,17 +27,14 @@ angular.module('weather.controller', [])
         coordOne.lat = data.coord.lat; 
         coordOne.lng = data.coord.lon;
         var weatherDescription1 = data.weather[0].description;
-        $scope.weather.push("The weather in " + cityName1 + ": " + weatherDescription1);
-        weatherDescriptions.push(weatherDescription1); 
+        storeWeatherDescription(weatherDescription1, cityName1);
       })
 
       var weatherPromise2 = openWeatherAPI.getWeatherForCity(cityName2).then(function(data) {
         coordTwo.lat = data.coord.lat; 
         coordTwo.lng = data.coord.lon;
-
         var weatherDescription2 = data.weather[0].description;
-        $scope.weather.push("The weather in " + cityName2 + ": " + weatherDescription2);
-        weatherDescriptions.push(weatherDescription2);
+        storeWeatherDescription(weatherDescription2, cityName2);
       })
 
       //waits for both promises to be done before comparing the weather of both cities
@@ -46,6 +43,12 @@ angular.module('weather.controller', [])
       });    
     }
   };
+
+  function storeWeatherDescription(weatherDescription, city) {
+    $scope.weather.push("The weather in " + city + ": " + weatherDescription);
+    weatherDescriptions.push(weatherDescription); 
+  };
+
 
   function checkWeather(descriptionArray, city1, city2) {
     $scope.newWeatherEntry1 = '';
@@ -60,7 +63,7 @@ angular.module('weather.controller', [])
 
     $scope.roundOver = true;
     if (city1 === city2) {
-      $scope.result = "You lose, cheater";
+      $scope.result = "You lose, lol";
       $scope.currentScore -=5000;
     } else if (descriptionArray[0].toLowerCase() === descriptionArray[1].toLowerCase()) {
       $scope.result = "You win this round";
