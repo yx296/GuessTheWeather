@@ -1,7 +1,7 @@
 angular.module('weather.controller', [])
 .controller('WeatherController', function($scope, $q, openWeatherAPI){
   
-  $scope.Weather = [];
+  $scope.weather = [];
   $scope.mapShow = true;
   $scope.roundOver = false;
   $scope.currentScore = 0;
@@ -27,7 +27,7 @@ angular.module('weather.controller', [])
         coordOne.lat = data.coord.lat; 
         coordOne.lng = data.coord.lon;
         var weatherDescription1 = data.weather[0].description;
-        $scope.Weather.push("The weather in " + cityName1 + ": " + weatherDescription1);
+        $scope.weather.push("The weather in " + cityName1 + ": " + weatherDescription1);
         weatherDescriptions.push(weatherDescription1); 
       })
 
@@ -36,7 +36,7 @@ angular.module('weather.controller', [])
         coordTwo.lng = data.coord.lon;
 
         var weatherDescription2 = data.weather[0].description;
-        $scope.Weather.push("The weather in " + cityName2 + ": " + weatherDescription2);
+        $scope.weather.push("The weather in " + cityName2 + ": " + weatherDescription2);
         weatherDescriptions.push(weatherDescription2);
       })
 
@@ -80,18 +80,14 @@ angular.module('weather.controller', [])
   };
 
   $scope.resetWeather = function() {
-    if ($scope.rounds === 4) {
-      $scope.rounds = 1;
-    } else {
-      $scope.rounds++;
-    }
-    weatherDescriptions = [];
-    $scope.Weather = [];
+    $scope.rounds === 4 ? $scope.rounds = 1 : $scope.rounds++;
+    $scope.weather = [];
     $scope.result = '';
     $scope.distance = '';
     $scope.mapShow = true;
     $scope.roundOver = false;
     $scope.gameMsg = "Try Again";
+    weatherDescriptions = [];
   };
 });
 
