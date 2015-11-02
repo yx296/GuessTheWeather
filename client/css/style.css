@@ -142,7 +142,7 @@ input {
 }
 
 
-#result {
+.result {
   margin-top: 15em;
   margin: auto;
   text-align: center;

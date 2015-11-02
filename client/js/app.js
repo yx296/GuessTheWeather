@@ -1,9 +1,10 @@
 //app.js
 angular.module('WeatherApp', [])
 .controller('WeatherController', function($scope, $http, $q){
+  
   $scope.Weather = [];
   $scope.description = [];
-  $scope.mapShow = false;
+  $scope.mapShow = true;
   $scope.roundOver = false;
   $scope.currentScore = 0;
   $scope.highScore = 0;
@@ -16,7 +17,7 @@ angular.module('WeatherApp', [])
   $scope.addWeather = function(keyEvent) {
     if (keyEvent.which === 13) {
       
-      $scope.mapShow = true;
+      $scope.mapShow = false;
 
       var cityName1 = $scope.newWeatherEntry1;
       var cityName2 = $scope.newWeatherEntry2;
@@ -95,7 +96,7 @@ angular.module('WeatherApp', [])
     $scope.Weather = [];
     $scope.description = [];
     $scope.result = '';
-    $scope.mapShow = false;
+    $scope.mapShow = true;
     $scope.roundOver = false;
     $scope.gameMsg = "Try Again";
   };
